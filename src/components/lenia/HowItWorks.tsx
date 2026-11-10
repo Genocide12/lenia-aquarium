@@ -16,16 +16,69 @@ export function HowItWorks() {
   return (
     <section className="mt-14 scroll-mt-8" id="how">
       <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-        Как устроена эта вселенная
+        Как это работает
       </h2>
       <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Lenia (от лат. <i>lenis</i> — «гладкий») — непрерывный клеточный автомат, придуманный
+        Ления (от лат. <i>lenis</i> — «гладкий») — непрерывный клеточный автомат, придуманный
         исследователем Бёртом Ван-Чаком Чаном в 2019 году. Это «Жизнь» Конвея, у которой
         убрали всю дискретность: клетки слились в гладкое поле, такты времени — в малые
-        шаги Δt, а «жив/мёртв» — в непрерывную концентрацию от 0 до 1. Правил всего три:
+        шаги Δt, а «жив/мёртв» — в непрерывную концентрацию от 0 до 1. Сначала — совсем
+        просто:
       </p>
 
       <div className="mt-6 grid gap-4 md:grid-cols-3">
+        <Card className="border-emerald-900/40 bg-card/60">
+          <CardHeader className="pb-3">
+            <Badge variant="outline" className="mb-2 w-fit border-emerald-800/60 text-emerald-400">
+              Просто 1
+            </Badge>
+            <CardTitle className="text-base">Каждая точка мира — это число</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm leading-relaxed text-neutral-300">
+            <p>
+              0 — пустота, 1 — яркое «живое вещество», всё между — полутон. Как концентрация
+              чернил в капле воды: не «есть клетка / нет клетки», а плавная яркость.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-emerald-900/40 bg-card/60">
+          <CardHeader className="pb-3">
+            <Badge variant="outline" className="mb-2 w-fit border-emerald-800/60 text-emerald-400">
+              Просто 2
+            </Badge>
+            <CardTitle className="text-base">Одно правило: оглянись вокруг</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm leading-relaxed text-neutral-300">
+            <p>
+              Каждая точка смотрит на соседей в радиусе R. Вокруг «в самый раз» — подрастает.
+              Слишком пусто или слишком густо — тает. Всё. Больше правил нет — и их не нужно.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-emerald-900/40 bg-card/60">
+          <CardHeader className="pb-3">
+            <Badge variant="outline" className="mb-2 w-fit border-emerald-800/60 text-emerald-400">
+              Просто 3
+            </Badge>
+            <CardTitle className="text-base">Существа — волны, которые держат форму</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm leading-relaxed text-neutral-300">
+            <p>
+              Как пузырь в воде: у них нет ни клеток, ни генов — только форма, которая сама
+              себя поддерживает. Она плывёт, самозалечивается после «ран», а иногда делится
+              надвое — и это настоящее рождение.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <h3 className="mt-10 text-lg font-bold tracking-tight sm:text-xl">
+        Математика — для тех, кто хочет глубже
+      </h3>
+
+      <div className="mt-4 grid gap-4 md:grid-cols-3">
         <Card className="border-emerald-900/40 bg-card/60">
           <CardHeader className="pb-3">
             <Badge variant="outline" className="mb-2 w-fit border-emerald-800/60 text-emerald-400">

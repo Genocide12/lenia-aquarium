@@ -545,12 +545,19 @@ export class LeniaEngine {
   }
 
   /**
-   * Mass, centroid, variance and organism count of the field
-   * (texture coords, y-up). Full readback. An "organism" is a connected
-   * component above 0.12 spanning 30–4000 cells — the same criteria as the
-   * NumPy reference tracker.
+   * Масса, центроид, дисперсия и список организмов поля
+   * (текстурные координаты, y вверх). Полный readback. «Организм» — связная
+   * компонента выше 0.12 площадью 30–4000 клеток (те же критерии, что в
+   * эталонном NumPy-трекере).
    */
-  getStats(): { mass: number; cx: number; cy: number; mom2: number; population: number } {
+  getStats(): {
+    mass: number;
+    cx: number;
+    cy: number;
+    mom2: number;
+    population: number;
+    blobs: { x: number; y: number; mass: number; size: number }[];
+  } {
     const gl = this.gl;
     const N = this.N;
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo[this.read]);
@@ -572,11 +579,11 @@ export class LeniaEngine {
         }
       }
     }
-    // organism count: flood fill over A > 0.12
+    // организмы: заливка по A > 0.12, с центроидом и массой каждой компоненты
     const vis = this.visBuf;
     const stk = this.stkBuf;
     vis.fill(0);
-    let population = 0;
+    const blobs: { x: number; y: number; mass: number; size: number }[] = [];
     const total = N * N;
     for (let i = 0; i < total; i++) {
       if (vis[i] !== 0 || buf[i * 4] <= 0.12) continue;
@@ -584,10 +591,18 @@ export class LeniaEngine {
       stk[sp++] = i;
       vis[i] = 1;
       let size = 0;
+      let bsx = 0;
+      let bsy = 0;
+      let bmass = 0;
       while (sp > 0) {
         const p = stk[--sp];
         size++;
         const x = p % N;
+        const y = (p - x) / N;
+        const a = buf[p * 4];
+        bsx += x * a;
+        bsy += y * a;
+        bmass += a;
         if (x > 0 && vis[p - 1] === 0 && buf[(p - 1) * 4] > 0.12) {
           vis[p - 1] = 1;
           stk[sp++] = p - 1;
@@ -605,13 +620,23 @@ export class LeniaEngine {
           stk[sp++] = p + N;
         }
       }
-      if (size >= 30 && size <= 4000) population++;
+      if (size >= 30 && size <= 4000 && bmass > 0) {
+        blobs.push({ x: bsx / bmass, y: bsy / bmass, mass: bmass, size });
+      }
     }
-    if (sum <= 0) return { mass: 0, cx: 0, cy: 0, mom2: 0, population };
+    if (sum <= 0) return { mass: 0, cx: 0, cy: 0, mom2: 0, population: blobs.length, blobs };
     const cx = sx / sum;
     const cy = sy / sum;
     const mom2 = s2 / sum - (cx * cx + cy * cy); // второй момент (разброс массы)
-    return { mass: sum, cx, cy, mom2, population };
+    return { mass: sum, cx, cy, mom2, population: blobs.length, blobs };
+  }
+
+  /** Прочитать текущее состояние (RGBA FLOAT, текстурные координаты) в буфер. */
+  readStateInto(buf: Float32Array) {
+    const gl = this.gl;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo[this.read]);
+    gl.readPixels(0, 0, this.N, this.N, gl.RGBA, gl.FLOAT, buf);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
 
   destroy() {

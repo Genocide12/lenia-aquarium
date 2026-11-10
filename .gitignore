@@ -1,30 +1,12 @@
-# deps / build
+skills/
 node_modules/
 .next/
-out/
-tsconfig.tsbuildinfo
-next-env.d.ts
-
-# runtime junk
-dev.log
-server.log
-*.log
-.DS_Store
-
-# sandbox-only stuff
-db/
-db.custom.db
-.zscripts/
-skills/
-upload/
-download/
-examples/
-mini-services/
-tests/
-agent-ctx/
-.env
-.env.*
-
-# sandbox gateway config
-Caddyfile
 .next-export/
+out/
+dev.log
+tool-results/
+scripts/orig/
+scripts/*.png
+scripts/shot*.png
+db/
+.env*
